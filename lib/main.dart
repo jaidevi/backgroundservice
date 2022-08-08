@@ -118,22 +118,30 @@ void onStart(ServiceInstance service) async {
     service.invoke(
       'update',
       {
-          "current_date": DateTime.now().toIso8601String()+"   "+'$hours:$minutes:$seconds1',
-       // "current_date": Text('$seconds1'),
+        "current_date": DateTime.now().toIso8601String() +
+            "   " +
+            '$hours:$minutes:$seconds1',
+        "hours": '$hours',
+        "minutes": '$minutes',
+        "seconds": '$seconds1',
+        // "current_date": Text('$seconds1'),
         "device": device,
       },
     );
   });
 }
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
 class _MyAppState extends State<MyApp> {
   String text = "Stop Service";
   Duration duration = Duration();
   late SharedPreferences pref;
+  late SharedPreferences preferences;
   late Timer timer;
   var nn;
   onResume() {}
@@ -165,11 +173,15 @@ class _MyAppState extends State<MyApp> {
                 final data = snapshot.data!;
                 String? device = data["device"];
                 String cc = data["current_date"];
+                String hrs = data["hours"];
+                String minutes = data["minutes"];
+                String seconds1 = data["seconds"];
                 // DateTime? date = DateTime.tryParse(data["current_date"]);
                 return Column(
                   children: [
                     Text(device ?? 'Unknown'),
                     Text(cc.toString()),
+                    Text('$hrs:$minutes:$seconds1'),
                   ],
                 );
               },
@@ -194,6 +206,9 @@ class _MyAppState extends State<MyApp> {
                 var isRunning = await service.isRunning();
                 if (isRunning) {
                   service.invoke("stopService");
+                  preferences.setString("keeey", seconds);
+                  print("ddddddddddddddddddd");
+                  print(seconds);
                 } else {
                   service.startService();
                 }
